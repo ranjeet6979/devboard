@@ -1,0 +1,13 @@
+name : ci
+
+on:
+  push:
+    branches:
+      - Master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name : checkut
+              uses: actions/checkout@v7
