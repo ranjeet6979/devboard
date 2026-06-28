@@ -12,3 +12,6 @@ jobs:
 
     git-leaks-check:
         uses: ./.github/workflows/secret-scanning.yml
+
+    dependency-checks:
+        uses: ./.github/workflows/dependency-scan.yml
