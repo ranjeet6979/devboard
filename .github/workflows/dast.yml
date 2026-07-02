@@ -14,7 +14,18 @@ jobs:
 
       - name: Wait for services to be healthy
         run: |
-          timeout 60s sh -c 'until curl -s ${{ vars.TARGET_WEBSITE_URL }} > /dev/null; do sleep 2; done'
+          sh -c '
+            for i in {1..30}; do 
+              if curl -s http://localhost:8080/ > /dev/null; then 
+                echo "Service is healthy!"
+                exit 0
+              fi
+              echo "Waiting for service... ($((i*2))s)"
+              sleep 2
+            done
+              echo "Timeout: Service did not start within 60 seconds."
+            exit 1
+          '
 
       - name: OWASP ZAP Baseline Scan
         uses: zaproxy/action-full-scan@v0.13.0
