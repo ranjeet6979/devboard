@@ -25,3 +25,8 @@ jobs:
     
     code-tests:
         uses: ./.github/workflows/code-tests.yml
+    
+    docker-push:
+        uses: ./.github/workflows/docker-push.yml
+        secrets: inherit
+        needs: [code-quality, git-leaks-check, dependency-checks, docker-file-and-image-checks, sonar-qube-scan, code-tests]
