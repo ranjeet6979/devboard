@@ -31,7 +31,7 @@ jobs:
         secrets: inherit
         needs: [code-quality, git-leaks-check, dependency-checks, docker-file-and-image-checks, sonar-qube-scan, code-tests]
 
-    deploy:
+    code-deploy:
         uses: ./.github/workflows/deploy.yml
         secrets: inherit
         needs: [docker-push]
