@@ -18,3 +18,7 @@ jobs:
 
     docker-file-and-image-checks:
         uses: ./.github/workflows/docker-scan.yml
+    
+    sonar-qube-scan:
+        uses: ./.github/workflows/sonar-scan.yml
+        secrets: inherit
