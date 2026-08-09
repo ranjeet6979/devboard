@@ -24,8 +24,8 @@ spec:
         env:
           - name: POSTGRES_USER
             valueFrom:
-              configMapKeyRef:
-                name: devboard-configmap
+              secretKeyRef:
+                name: devboard-secrets
                 key: POSTGRES_USER
           
           - name: POSTGRES_PASSWORD
@@ -40,9 +40,6 @@ spec:
                 name: devboard-secrets
                 key: POSTGRES_DB
 
-          # Use a subdirectory as the data dir. When the volume is a real block
-          # device (EBS), its filesystem root contains a lost+found directory,
-          # and Postgres refuses to initdb into a non-empty mount point.
           - name: PGDATA
             value: /var/lib/postgresql/data/pgdata
 
@@ -65,10 +62,10 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: data
-        namespace: devboard
       spec:
         accessModes:
           - ReadWriteOnce
+        storageClassName: gp3
         resources:
           requests:
             storage: 1Gi
