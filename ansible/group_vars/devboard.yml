@@ -16,5 +16,5 @@ aws_access_key: ""
 aws_secret_key: ""
 
 # Change this to YOUR fork.
-repo_url: https://github.com/LondheShubham153/devboard.git
-repo_branch: mega-project
+repo_url: https://github.com/ranjeet6979/devboard.git
+repo_branch: master
