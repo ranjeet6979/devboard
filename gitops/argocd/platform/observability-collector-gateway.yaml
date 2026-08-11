@@ -17,8 +17,8 @@ spec:
         valueFiles:
           - $values/gitops/observability/collector-gateway-values.yaml
 
-    - repoURL: https://github.com/LondheShubham153/devboard.git
-      targetRevision: mega-project
+    - repoURL: https://github.com/ranjeet6979/devboard.git
+      targetRevision: master
       ref: values
 
   destination:
