@@ -6,7 +6,7 @@ metadata:
 spec:
   acme:
     server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: trainwithshubham@gmail.com
+    email: ranjeet6979@gmail.com
     # ClusterIssuer, so this lands in the cert-manager namespace, not devboard.
     privateKeySecretRef:
       name: letsencrypt-staging-account-key
@@ -28,7 +28,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: trainwithshubham@gmail.com
+    email: ranjeet6979@gmail.com
     privateKeySecretRef:
       name: letsencrypt-prod-account-key
     solvers:
