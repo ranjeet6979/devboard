@@ -2,7 +2,7 @@ name: DevSecOps
 
 on:
   push:
-    branches: [mega-project]
+    branches: [master]
     paths:
       - 'backend/**'
       - 'frontend/**'
@@ -10,7 +10,7 @@ on:
       - '.github/workflows/**'
       - 'sonar-project.properties'
   pull_request:
-    branches: [mega-project]
+    branches: [master]
   workflow_dispatch:
 
 jobs:
