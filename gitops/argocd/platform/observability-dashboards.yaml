@@ -9,8 +9,8 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/LondheShubham153/devboard.git
-    targetRevision: mega-project
+    repoURL: https://github.com/ranjeet6979/devboard.git
+    targetRevision: master
     path: gitops/observability/dashboards
 
   destination:
