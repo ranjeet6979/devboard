@@ -49,6 +49,14 @@
         cmd: /tmp/aws/install --update
         creates: /usr/local/bin/aws
 
+    - name: Clean up AWS CLI installation files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/awscli.zip
+        - /tmp/aws
+
     # ------------------------------------------------------------ terraform
 
     - name: Find the current Terraform version
@@ -104,7 +112,18 @@
         mode: "0755"
         remote_src: true
 
+    - name: Clean up Helm temporary files
+      ansible.builtin.file:
+        path: "/tmp/linux-{{ go_arch }}"
+        state: absent        
+
     # ------------------------------------------------------------------- gh
+
+    - name: Check installed GitHub CLI version
+      ansible.builtin.command: gh --version
+      register: gh_installed
+      failed_when: false
+      changed_when: false
 
     - name: Find the current GitHub CLI version
       ansible.builtin.uri:
@@ -124,6 +143,7 @@
         dest: /tmp
         remote_src: true
         creates: "/tmp/gh_{{ gh_ver }}_linux_{{ go_arch }}/bin/gh"
+      when: gh_installed.rc != 0 or gh_ver not in gh_installed.stdout
 
     - name: Install the GitHub CLI
       ansible.builtin.copy:
@@ -131,3 +151,10 @@
         dest: /usr/local/bin/gh
         mode: "0755"
         remote_src: true
+      when: gh_installed.rc != 0 or gh_ver not in gh_installed.stdout
+
+    - name: Clean up GitHub CLI temporary files
+      ansible.builtin.file:
+        path: "/tmp/gh_{{ gh_ver }}_linux_{{ go_arch }}"
+        state: absent
+      when: gh_installed.rc != 0 or gh_ver not in gh_installed.stdout
