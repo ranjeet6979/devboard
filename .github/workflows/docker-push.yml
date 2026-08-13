@@ -47,6 +47,20 @@ jobs:
           registry: dhi.io
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Generate SBOM
+        uses: sbomify/sbomify-action@master
+        env:
+          LOCK_FILE: package-lock.json
+          OUTPUT_FILE: sbom.cdx.json
+          ENRICH: true
+          UPLOAD: false
+
+      - name: Upload SBOM as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.cdx.json
 
       - name: Docker Build and Push
         id: build-and-push
