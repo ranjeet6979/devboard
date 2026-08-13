@@ -36,6 +36,9 @@ jobs:
     secrets: inherit
   code-tests:
     uses: ./.github/workflows/code-tests.yml
+  sbom-test:
+    uses: ./.github/workflows/sbom.yml
+    secrets: inherit
 
   docker-push:
     if: github.event_name != 'pull_request'
