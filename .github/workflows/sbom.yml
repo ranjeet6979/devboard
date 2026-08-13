@@ -1,0 +1,44 @@
+name: SBOM
+
+on:
+    workflow_call:
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: backend
+            path: backend
+            lock_file: backend/go.sum
+
+          - name: frontend
+            path: frontend
+            lock_file: frontend/package-lock.json
+
+          - name: ai-service
+            path: ai-service
+            lock_file: ai-service/requirements.txt
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate SBOM
+        uses: sbomify/sbomify-action@master
+        env:
+          LOCK_FILE: ${{ matrix.lock_file }}
+          OUTPUT_FILE: ${{ matrix.name }}-sbom.cdx.json
+          ENRICH: true
+          UPLOAD: false
+        with:
+          bom-type: sbom
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}-sbom
+          path: ${{ matrix.name }}-sbom.cdx.json
