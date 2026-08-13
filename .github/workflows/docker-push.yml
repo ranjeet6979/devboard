@@ -10,20 +10,11 @@ on:
 
 jobs:
   build-push:
-    runs-on: ubuntu-latest # amd64 — matches the EKS nodes
+    runs-on: ubuntu-latest        # amd64 — matches the EKS nodes
     strategy:
       fail-fast: false
       matrix:
         folders: ['backend', 'frontend', 'ai-service']
-
-    outputs:
-      image-digest: ${{ steps.build-push.outputs.digest }}
-
-    permissions:
-      contents: read
-      id-token: write      # CRITICAL: cosign needs this for keyless signing
-      packages: write
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
@@ -41,9 +32,7 @@ jobs:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # ============ SOTA: Build & Push with metadata ============
       - name: Docker Build and Push
-        id: build-push
         uses: docker/build-push-action@v7
         with:
           context: ./${{ matrix.folders }}
@@ -51,28 +40,3 @@ jobs:
           tags: |
             ${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}:${{ inputs.image_tag }}
             ${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}:latest
-          # SOTA: Capture image digest for signing & SBOM attachment
-          outputs: type=image,push-by-digest=true,name-canonical=true
-          # SOTA: Attach build metadata (VCS, timestamp)
-          labels: |
-            org.opencontainers.image.source=https://github.com{{ github.repository }}
-            org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
-
-      # ============ SOTA: SBOM Generation (Supply Chain) ============
-      - name: Install Syft (SBOM Generator)
-        run: |
-          curl -sSfL https://githubusercontent.com | sh -s -- -b /usr/local/bin
-          syft --version
-
-      - name: Generate SBOM (SPDX)
-        run: |
-          syft ${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}:${{ inputs.image_tag }}
-
-      # ============ SOTA: Cosign Image Signing ============
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.5.0
-
-      - name: Sign the Docker Image
-        run: |
-          cosign sign --yes "${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}@${{ steps.build-push.outputs.digest }}"
