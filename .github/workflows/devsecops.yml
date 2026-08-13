@@ -43,6 +43,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      packages: write
     uses: ./.github/workflows/docker-push.yml
     with:
       image_tag: ${{ needs.prep.outputs.tag }}
