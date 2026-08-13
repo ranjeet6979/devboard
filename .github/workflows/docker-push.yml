@@ -10,14 +10,27 @@ on:
 
 jobs:
   build-push:
-    runs-on: ubuntu-latest        # amd64 — matches the EKS nodes
+    runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
         folders: ['backend', 'frontend', 'ai-service']
+
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v7
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v4.1.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.11.1
 
       - name: Docker Setup [Login]
         uses: docker/login-action@v4
@@ -33,6 +46,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Docker Build and Push
+        id: build-and-push
         uses: docker/build-push-action@v7
         with:
           context: ./${{ matrix.folders }}
@@ -40,3 +54,10 @@ jobs:
           tags: |
             ${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}:${{ inputs.image_tag }}
             ${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}:latest
+
+      - name: Sign Image with Cosign
+        env:
+          IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+        run: |
+          cosign sign --yes "${IMAGE}@${DIGEST}"
