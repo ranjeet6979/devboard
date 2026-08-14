@@ -1,0 +1,31 @@
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: block-latest-tag
+spec:
+  validationActions:
+    - Deny
+  matchConstraints:
+    resourceRules:
+      # Match standard Pods
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+      # Match Deployments
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments"]
+  validations:
+    - message: "Using the 'latest' image tag is forbidden. Use a specific version tag."
+      expression: >
+        (
+          object.kind == 'Pod' &&
+          object.spec.containers.all(c, !c.image.endsWith(':latest') && c.image.contains(':'))
+        ) ||
+        (
+          object.kind == 'Deployment' &&
+          has(object.spec.template.spec.containers) &&
+          object.spec.template.spec.containers.all(c, !c.image.endsWith(':latest') && c.image.contains(':'))
+        )
