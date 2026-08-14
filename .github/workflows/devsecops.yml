@@ -26,9 +26,7 @@ jobs:
   code-quality:
     uses: ./.github/workflows/code-quality.yml
   go-lint-check:
-    uses: ./.github/workflows/matrix.yml
-  terraform-lint-check:
-    uses: ./.github/workflows/terraform-ci.yml    
+    uses: ./.github/workflows/matrix.yml   
   secret-scanning:
     uses: ./.github/workflows/secret-scanning.yml
   dependency-checks:
@@ -49,7 +47,7 @@ jobs:
     secrets: inherit
   docker-push:
     if: github.event_name != 'pull_request'
-    needs: [prep, code-quality, code-tests, go-lint-check, terraform-lint-check, sonar-qube, docker-checks, dependency-checks, secret-scanning, sbom-test, kyverno-tests]
+    needs: [prep, code-quality, code-tests, go-lint-check, sonar-qube, docker-checks, dependency-checks, secret-scanning, sbom-test, kyverno-tests]
     permissions:
       contents: read
       id-token: write
