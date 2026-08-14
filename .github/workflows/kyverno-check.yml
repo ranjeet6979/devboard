@@ -15,4 +15,4 @@ jobs:
 
       - name: Validate manifests
         run: |
-          kyverno apply policies/ --resource k8s/
+          kyverno apply kyverno-policy/ --resource k8s/
