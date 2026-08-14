@@ -9,6 +9,7 @@ on:
       - 'ai-service/**'
       - '.github/workflows/**'
       - 'sonar-project.properties'
+      - 'kyverno-policy/**'
   pull_request:
     branches: [master]
   workflow_dispatch:
