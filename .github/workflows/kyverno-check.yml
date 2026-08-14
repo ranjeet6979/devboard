@@ -15,8 +15,14 @@ jobs:
         with:
           release: 'v1.14.0'
 
+      - name: Validate deployment manifests for app label
+        run: |
+          find k8s -name '*deployment*.yml' | while read file; do
+          kyverno apply kyverno-policy/app-label.yml --resource "$file"
+          done
+
       - name: Validate manifests
         run: |
           find k8s -name '*deployment*.yml' | while read file; do
-          kyverno apply kyverno-policy/ --resource "$file"
+          kyverno apply kyverno-policy/not-latest-image-tag.yml --resource "$file"
           done
