@@ -15,20 +15,10 @@ jobs:
         with:
           release: 'v1.14.0'
 
-      - name: Validate deployment manifests for app label
+      - name: Validate Kubernetes manifests
         run: |
-          for file in k8s/*; do
-            grep -q "^kind: Deployment" "$file" && \
-            kyverno apply \
-            kyverno-policy/app-label.yml \
-            --resource "$file"
-          done
+          kyverno apply kyverno-policy/app-label.yml --resource k8s/
 
       - name: Enforce no-latest-tag policy on deployments
         run: |
-          for file in k8s/*; do
-            grep -q "^kind: Deployment" "$file" && \
-            kyverno apply \
-            kyverno-policy/not-latest-image-tag.yml \
-            --resource "$file"
-          done
+          kyverno apply kyverno-policy/not-latest-image-tag.yml --resource k8s/
