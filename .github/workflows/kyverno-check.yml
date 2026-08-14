@@ -10,12 +10,9 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v7
 
-      - name: Install Kyverno CLI
-        run: |
-          curl -LO https://github.com/kyverno/kyverno/releases/latest/download/kyverno-cli_linux_x86_64.tar.gz
-          tar xzf kyverno-cli_linux_x86_64.tar.gz
-          sudo mv kyverno /usr/local/bin/
+      - name: Setup Kyverno CLI
+        uses: kyverno/action-install-cli@v0.2.0
 
-      - name: Validate Kubernetes manifests
+      - name: Validate manifests
         run: |
-          kyverno apply kyverno-policy/ --resource k8s/
+          kyverno apply policies/ --resource k8s/

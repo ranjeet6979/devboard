@@ -44,7 +44,7 @@ jobs:
     secrets: inherit
   docker-push:
     if: github.event_name != 'pull_request'
-    needs: [prep, code-quality, code-tests, sonar-qube, docker-checks, dependency-checks, secret-scanning]
+    needs: [prep, code-quality, code-tests, sonar-qube, docker-checks, dependency-checks, secret-scanning, kyverno-tests]
     permissions:
       contents: read
       id-token: write
