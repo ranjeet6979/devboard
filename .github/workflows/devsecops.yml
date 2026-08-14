@@ -39,7 +39,9 @@ jobs:
   sbom-test:
     uses: ./.github/workflows/sbom.yml
     secrets: inherit
-
+  kyverno-tests:
+    uses: ./.github/workflows/kyverno-check.yml
+    secrets: inherit
   docker-push:
     if: github.event_name != 'pull_request'
     needs: [prep, code-quality, code-tests, sonar-qube, docker-checks, dependency-checks, secret-scanning]

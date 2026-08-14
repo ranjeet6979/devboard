@@ -1,0 +1,29 @@
+name: Kyverno Policy Validation
+
+on:
+    workflow_call:
+
+jobs:
+  kyverno:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v7
+
+jobs:
+  kyverno:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Kyverno CLI
+        run: |
+          curl -LO https://github.com/kyverno/kyverno/releases/latest/download/kyverno-cli_linux_x86_64.tar.gz
+          tar xzf kyverno-cli_linux_x86_64.tar.gz
+          sudo mv kyverno /usr/local/bin/
+
+      - name: Validate Kubernetes manifests
+        run: |
+          kyverno apply kyverno-policy/ --resource k8s/

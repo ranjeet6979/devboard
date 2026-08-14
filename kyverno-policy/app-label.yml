@@ -1,0 +1,35 @@
+apiVersion: policies.kyverno.io/v1alpha1
+kind: ValidatingPolicy
+metadata:
+  name: require-app-label
+spec:
+  validationActions:
+    - Deny
+
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments"]
+
+  validations:
+    - message: "App label is required on Pods and Deployments"
+      expression: >
+        (
+          object.kind == 'Pod' &&
+          has(object.metadata.labels) &&
+          has(object.metadata.labels.app) &&
+          object.metadata.labels.app != ''
+        ) ||
+        (
+          object.kind == 'Deployment' &&
+          has(object.spec.template.metadata.labels) &&
+          has(object.spec.template.metadata.labels.app) &&
+          object.spec.template.metadata.labels.app != ''
+        )
