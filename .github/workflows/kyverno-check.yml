@@ -10,8 +10,10 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Kyverno CLI
-        uses: kyverno/action-install-cli@v0.2.0
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@v1.1.1
+        with:
+          release: 'v1.14.0'
 
       - name: Validate manifests
         run: |
