@@ -21,7 +21,7 @@ jobs:
           kyverno apply kyverno-policy/app-label.yml --resource "$file"
           done
 
-      - name: Validate manifests
+      - name: Enforce no-latest-tag policy on deployments
         run: |
           find k8s -name '*deployment*.yml' | while read file; do
           kyverno apply kyverno-policy/not-latest-image-tag.yml --resource "$file"
