@@ -101,6 +101,8 @@ You should see `Successfully configured the backend "s3"`.
 aws s3 ls | grep devboard-tfstate
 aws s3api get-bucket-versioning --bucket "$(terraform -chdir=bootstrap output -raw bucket_name)"
 ```
+<br><img width="580" height="31" alt="image" src="https://github.com/user-attachments/assets/71b58166-cf39-4d34-a9a8-0c1d82e6f206" />
+<br><img width="1022" height="62" alt="image" src="https://github.com/user-attachments/assets/63972c90-5520-4ff3-b198-f4ee78f80ac5" />
 
 The second command must print `"Status": "Enabled"`. If it doesn't, stop and
 fix it — versioning is what makes everything after this recoverable.
