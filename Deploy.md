@@ -771,7 +771,12 @@ envoy
 
 # 3. metrics — Prometheus targets
 kubectl -n observability port-forward svc/prometheus-operated 9090:9090
+
+<br><img width="1466" height="598" alt="image" src="https://github.com/user-attachments/assets/615bc0c8-611c-49fc-9ab2-4af8c3054374" />
+
 #    http://localhost:9090/targets -> devboard-backend, devboard-ai-service UP
+<br><img width="1470" height="831" alt="image" src="https://github.com/user-attachments/assets/f2e0e77b-4fd7-4630-8688-8630b05978b5" />
+
 
 # 4. logs — Explore -> Loki -> {k8s_namespace_name="devboard"}
 kubectl -n observability logs deploy/otel-collector-gateway | grep -i loki
