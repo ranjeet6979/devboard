@@ -702,6 +702,9 @@ kubectl -n observability port-forward svc/observability-grafana 3000:80 --addres
 <http://localhost:3000> — **`admin` / `devboard`**.
 <br><img width="1459" height="828" alt="image" src="https://github.com/user-attachments/assets/bf7dc6bb-4a8a-4a3e-b028-9d353bd00c53" />
 
+<br><img width="1466" height="490" alt="image" src="https://github.com/user-attachments/assets/d1012402-64ee-40e6-94dc-7fc74ec58fa8" />
+
+
 
 
 It is a ClusterIP, not a LoadBalancer, on purpose: a LoadBalancer here is a third
