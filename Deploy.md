@@ -752,6 +752,22 @@ Folder **Community**: node-exporter (1860) and kube-state (13332).
 curl -s "http://$ADDR/api/projects" >/dev/null
 
 # 2. traces — Explore -> Tempo -> Search, service.name = backend / ai-service / envoy
+```
+```bash
+ai-service
+<br><img width="1463" height="819" alt="image" src="https://github.com/user-attachments/assets/7afe5670-eb06-4ee0-8959-d6a7678b9b07" />
+<br><img width="1469" height="773" alt="image" src="https://github.com/user-attachments/assets/f43654be-24ee-4fbd-97c1-0b694a3fc2aa" />
+
+```
+```bash
+backend
+<br><img width="1248" height="783" alt="image" src="https://github.com/user-attachments/assets/25b45610-3945-4216-b00e-7841d4dbaa33" />
+```
+```bash
+envoy
+<br><img width="1469" height="784" alt="image" src="https://github.com/user-attachments/assets/695e8bf6-ff25-4d73-9e58-8e947b8dbbd8" />
+
+```
 
 # 3. metrics — Prometheus targets
 kubectl -n observability port-forward svc/prometheus-operated 9090:9090
