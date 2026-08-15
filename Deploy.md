@@ -171,6 +171,16 @@ aws secretsmanager put-secret-value \
 aws secretsmanager get-secret-value --secret-id devboard/postgres \
   --region us-west-2 --query SecretString --output text | jq 'keys'
 # ["dbname","password","username"]
+output:
+{
+    "ARN": "arn:aws:secretsmanager:us-west-2:899805259876:secret:devboard/postgres-qhadDt",
+    "Name": "devboard/postgres",
+    "VersionId": "2ae67062-ee02-4a0b-932a-fd2db9f2baa7",
+    "VersionStages": [
+        "AWSCURRENT"
+    ]
+}
+
 ```
 
 > Hex, not base64: the value goes into a `postgres://` DSN, and base64's `/` and
