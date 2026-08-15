@@ -15,7 +15,7 @@ export default {
     // A leading dot allows a domain and its subdomains. Never set this to
     // `true` — that turns the check off for every host on the internet.
     allowedHosts: [
-      'devboard.trainwithshubham.com',
+      'devboard.tanishka.site',
       '.elb.amazonaws.com',
     ],
     proxy: {

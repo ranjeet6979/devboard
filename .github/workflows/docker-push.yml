@@ -53,7 +53,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: ./${{ matrix.folders }}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: |
             ${{ vars.DOCKERHUB_USERNAME }}/devboard-${{ matrix.folders }}:${{ inputs.image_tag }}

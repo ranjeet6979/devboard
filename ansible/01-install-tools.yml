@@ -6,7 +6,7 @@
 # Everything except jq/git/dig is a single downloaded binary dropped into
 # /usr/local/bin. No apt repositories, no GPG keys — those are the parts that
 # break, and none of these tools ship in Ubuntu's own package list anyway.
-
+i
 - name: Install the deployment tools
   hosts: devboard
   become: true
@@ -24,10 +24,15 @@
           - git
           - jq
           - unzip
+          - net-tools
         state: present
         update_cache: true
 
     # ------------------------------------------------------------------ aws
+
+    - name: Stop and disable UFW firewall
+      ansible.posix.ufw:
+        state: disabled
 
     # Ubuntu's `awscli` package is version 1, which has no `aws eks get-token`.
     # Every kubectl call against EKS needs that, so we install v2 from AWS.

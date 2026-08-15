@@ -9,7 +9,7 @@ metadata:
 spec:
   secretName: devboard-tls
   dnsNames:
-    - devboard.trainwithshubham.com
+    - devboard.tanishka.site
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer
