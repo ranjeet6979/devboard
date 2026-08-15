@@ -163,14 +163,6 @@ aws secretsmanager put-secret-value \
   --region us-west-2 \
   --secret-string "$(jq -nc --arg p "$PGPASS" \
       '{username:"devboard", password:$p, dbname:"devboard"}')"
-```
-
-**You know it worked when** this prints the three keys without printing the password:
-
-```bash
-aws secretsmanager get-secret-value --secret-id devboard/postgres \
-  --region us-west-2 --query SecretString --output text | jq 'keys'
-# ["dbname","password","username"]
 output:
 {
     "ARN": "arn:aws:secretsmanager:us-west-2:899805259876:secret:devboard/postgres-qhadDt",
@@ -180,6 +172,15 @@ output:
         "AWSCURRENT"
     ]
 }
+```
+
+**You know it worked when** this prints the three keys without printing the password:
+
+```bash
+aws secretsmanager get-secret-value --secret-id devboard/postgres \
+  --region us-west-2 --query SecretString --output text | jq 'keys'
+output: ["dbname","password","username"]
+
 
 ```
 
@@ -196,9 +197,11 @@ git push -u origin mega-project
 **You know it worked when:**
 
 ```bash
-git ls-remote --exit-code --heads origin mega-project && echo OK
-git log origin/mega-project..HEAD --oneline        # empty
+git ls-remote --exit-code --heads origin master && echo OK
+git log origin/master..HEAD --oneline        # empty
 ```
+<img width="662" height="66" alt="image" src="https://github.com/user-attachments/assets/7d4dce8e-a521-4f6d-bf5c-b31dcc25e681" />
+
 
 > ArgoCD reads GitHub, not your laptop. An unpushed commit is invisible to it,
 > and the symptom is a confusing `ComparisonError` (§16.4).
