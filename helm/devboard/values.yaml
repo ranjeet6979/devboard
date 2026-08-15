@@ -81,10 +81,10 @@ gateway:
   className: envoy
   listenerPort: 80
   # Empty accepts any Host, which is what the raw load balancer URL needs.
-  hostname: ""
+  hostname: "devboard.tanishka.site"
   # Off by default: the chart must still work with no cert-manager and no domain.
   tls:
-    enabled: false
+    enabled: true
     port: 443
     # Must be in the Gateway's namespace. Empty -> "<fullname>-tls".
     secretName: ""
