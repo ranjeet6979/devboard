@@ -86,6 +86,8 @@ Applications are on their way. Watch them:
 ```bash
 kubectl -n argocd get applications -w
 ```
+<br><img width="510" height="334" alt="image" src="https://github.com/user-attachments/assets/a68d17a5-abdb-42a5-9772-308b3e1cd7d4" />
+
 
 They come up in **sync waves** — Prometheus/Tempo/Loki first (wave 1), then
 both Collectors (wave 2, because their exporters point at the first three),
@@ -95,6 +97,8 @@ CRD-dependent config (wave 4).
 ```bash
 kubectl -n observability get pods
 ```
+<br><img width="699" height="268" alt="image" src="https://github.com/user-attachments/assets/13f61fb6-be98-4dad-a04b-efc59ce5eb6a" />
+
 
 ## Two sources, and why
 
@@ -133,11 +137,45 @@ not obviously point back at the edit.
 > DevBoard stacks. If you get it wrong, you lose both public URLs. Know the
 > rollback before you need it:
 >
-> ```bash
-> kubectl get gatewayclass envoy -o yaml        # look for Accepted=True
-> kubectl patch gatewayclass envoy --type=json \
->   -p '[{"op":"remove","path":"/spec/parametersRef"}]'
-> ```
+```bash
+kubectl get gatewayclass envoy -o yaml        # look for Accepted=True
+root@ip-20-0-1-248:/opt/devboard# kubectl get gatewayclass envoy -o yaml 
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: observability-config:gateway.networking.k8s.io/GatewayClass:observability/envoy
+  creationTimestamp: "2026-08-15T08:15:02Z"
+  finalizers:
+  - gateway-exists-finalizer.gateway.networking.k8s.io
+  generation: 2
+  name: envoy
+  resourceVersion: "95575"
+  uid: b1509c85-3b80-47af-988c-17b2c72c1153
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+  parametersRef:
+    group: gateway.envoyproxy.io
+    kind: EnvoyProxy
+    name: proxy-telemetry
+    namespace: envoy-gateway-system
+status:
+  conditions:
+  - lastTransitionTime: "2026-08-15T10:26:07Z"
+    message: Valid GatewayClass
+    observedGeneration: 2
+    reason: Accepted
+    status: "True"
+    type: Accepted
+```
+```bash
+ kubectl patch gatewayclass envoy --type=json \
+   -p '[{"op":"remove","path":"/spec/parametersRef"}]'
+
+root@ip-20-0-1-248:/opt/devboard#  kubectl patch gatewayclass envoy --type=json \
+   -p '[{"op":"remove","path":"/spec/parametersRef"}]'
+gatewayclass.gateway.networking.k8s.io/envoy patched
+```
 
 ## Read the Collector config — this is the chapter
 
