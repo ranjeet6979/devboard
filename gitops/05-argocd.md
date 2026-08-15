@@ -9,7 +9,18 @@ everything else. Chapter 03 put it there.
 
 ```bash
 helm list -n argocd        # argocd, chart argo-cd-10.3.0, deployed
+NAME  	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART         	APP VERSION
+argocd	argocd   	1       	2026-08-15 08:02:56.976056926 +0000 UTC	deployed	argo-cd-10.3.0	v3.5.0
+
 kubectl -n argocd get pods
+NAME                                                READY   STATUS    RESTARTS      AGE
+argocd-application-controller-0                     1/1     Running   0             18m
+argocd-applicationset-controller-7b7869f499-2hpfl   1/1     Running   0             18m
+argocd-dex-server-5ddb9bd9b9-6s9mw                  1/1     Running   2 (18m ago)   18m
+argocd-notifications-controller-7fd66b54dc-2zqgm    1/1     Running   0             18m
+argocd-redis-56d496fcc4-qbmwz                       1/1     Running   0             18m
+argocd-repo-server-576dc94c65-hffvd                 1/1     Running   0             18m
+argocd-server-68cd9f5c6c-78nlt                      1/1     Running   0             18m
 ```
 
 > ⚠️ Do **not** run `helm install argocd` on top of it. Helm refuses with
