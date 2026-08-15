@@ -90,7 +90,7 @@ gateway:
     secretName: ""
     createCertificate: true
     issuerRef:
-      name: letsencrypt-staging
+      name: letsencrypt-prod
       kind: ClusterIssuer
     httpsRedirect: true
 # The shared ClusterIssuers in gitops/cert-manager/ hard-wire their solver to the
