@@ -629,6 +629,10 @@ kubectl -n devboard get certificate devboard-tls -w
 kubectl -n devboard get secret devboard-tls -o jsonpath='{.data.tls\.crt}' \
   | base64 -d | openssl x509 -noout -issuer -dates
 # issuer=C=US, O=Let's Encrypt, ...   NOT  CN=(STAGING) ...
+output:
+issuer=C = US, O = Let's Encrypt, CN = YE1
+notBefore=Aug 15 13:51:01 2026 GMT
+notAfter=Nov 13 13:51:00 2026 GMT
 ```
 
 ### 12.6 Turn on the HTTPS listener
@@ -636,19 +640,30 @@ kubectl -n devboard get secret devboard-tls -o jsonpath='{.data.tls\.crt}' \
 The `:443` listener is already in `k8s/gateway.yml`. Once the Secret exists it
 goes green on the next sync.
 
+<img width="1470" height="823" alt="image" src="https://github.com/user-attachments/assets/40274d80-5be3-4d0d-93aa-a4d6676562a4" />
+
+
 ```bash
 kubectl -n devboard get gateway devboard-gateway \
   -o jsonpath='{range .status.listeners[*]}{.name}{"\t"}{range .conditions[*]}{.type}={.status}{" "}{end}{"\n"}{end}'
 # http   Accepted=True ResolvedRefs=True Programmed=True
 # https  Accepted=True ResolvedRefs=True Programmed=True
+output:
+http	Programmed=True Accepted=True ResolvedRefs=True 
+https	Programmed=True Accepted=True ResolvedRefs=True
 ```
 
 **You know it worked when:**
 
 ```bash
-curl -sI https://devboard.trainwithshubham.com/ | head -1
-curl -s https://devboard.trainwithshubham.com/api/projects | jq '.[0]'
+curl -sI https://devboard.tanishka.site/ | head -1
 ```
+<br><img width="613" height="33" alt="image" src="https://github.com/user-attachments/assets/e5aa54d4-8b03-49ed-a9b5-5dd154aba559" />
+```bash
+curl -s https://devboard.tanishka.site/api/projects | jq '.[0]'
+```
+<br><img width="1449" height="48" alt="image" src="https://github.com/user-attachments/assets/f846a8a7-364c-4fb6-8414-d15af59d575c" />
+
 
 ### 12.7 Redirect HTTP to HTTPS
 
@@ -659,10 +674,13 @@ git add k8s/httproute-redirect.yml && git commit -m "redirect http to https" && 
 **You know it worked when the domain redirects but the raw URL still does not:**
 
 ```bash
-curl -s -o /dev/null -w '%{http_code} -> %{redirect_url}\n' http://devboard.trainwithshubham.com/
+curl -s -o /dev/null -w '%{http_code} -> %{redirect_url}\n' http://devboard.tanishka.site/
 # 301 -> https://devboard.trainwithshubham.com/
+```
+<br><img width="883" height="37" alt="image" src="https://github.com/user-attachments/assets/32d2757c-6ebb-4564-a225-d270d4411ad8" />
 
 curl -s -o /dev/null -w '%{http_code}\n' "http://$ADDR/"     # 200, not 301
+
 ```
 
 Renewal is automatic at 60 days. Nothing to do.
@@ -678,10 +696,13 @@ Everything lives in the `observability` namespace.
 ### 13.1 Open Grafana
 
 ```bash
-kubectl -n observability port-forward svc/observability-grafana 3000:80
+kubectl -n observability port-forward svc/observability-grafana 3000:80 --address 0.0.0.0> /tmp/observability.log 2>&1 &
 ```
 
 <http://localhost:3000> — **`admin` / `devboard`**.
+<br><img width="1459" height="828" alt="image" src="https://github.com/user-attachments/assets/bf7dc6bb-4a8a-4a3e-b028-9d353bd00c53" />
+
+
 
 It is a ClusterIP, not a LoadBalancer, on purpose: a LoadBalancer here is a third
 billed load balancer in front of an admin console with a known password. Also
