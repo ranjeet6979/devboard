@@ -164,6 +164,23 @@ aws secretsmanager put-secret-value \
   --secret-string "$(jq -nc --arg p "$PGPASS" \
       '{username:"devboard", password:$p, dbname:"devboard"}')"
 ```
+```bash
+ubuntu@ip-20-0-1-248:/opt/devboard/terraform/bootstrap$ PGPASS=$(openssl rand -hex 32)
+
+aws secretsmanager put-secret-value \
+  --secret-id devboard/postgres \
+  --region us-west-2 \
+  --secret-string "$(jq -nc --arg p "$PGPASS" \
+      '{username:"devboard", password:$p, dbname:"devboard"}')"
+{
+    "ARN": "arn:aws:secretsmanager:us-west-2:899805259876:secret:devboard/postgres-qhadDt",
+    "Name": "devboard/postgres",
+    "VersionId": "1bf64cca-30c9-4b9c-8c9a-ed08a674c5ee",
+    "VersionStages": [
+        "AWSCURRENT"
+    ]
+}
+```
 
 **You know it worked when** this prints the three keys without printing the password:
 
@@ -172,7 +189,16 @@ aws secretsmanager get-secret-value --secret-id devboard/postgres \
   --region us-west-2 --query SecretString --output text | jq 'keys'
 # ["dbname","password","username"]
 ```
-
+```bash
+ubuntu@ip-20-0-1-248:/opt/devboard/terraform/bootstrap$ aws secretsmanager get-secret-value --secret-id devboard/postgres \
+  --region us-west-2 --query SecretString --output text | jq 'keys'
+# ["dbname","password","username"]
+[
+  "dbname",
+  "password",
+  "username"
+]
+```
 > Hex, not base64: the value goes into a `postgres://` DSN, and base64's `/` and
 > `+` would need URL-encoding.
 
