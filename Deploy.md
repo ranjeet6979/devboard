@@ -241,13 +241,29 @@ helm upgrade --install eg oci://docker.io/envoyproxy/gateway-helm \
 
 kubectl apply -f gitops/gateway/gatewayclass.yaml
 ```
+<br><img width="867" height="592" alt="image" src="https://github.com/user-attachments/assets/84cc48fb-2df6-4ab4-b652-cb5f524a41d5" />
+
 
 **You know it worked when:**
 
 ```bash
 kubectl -n envoy-gateway-system rollout status deploy/envoy-gateway
+output: deployment "envoy-gateway" successfully rolled out
 kubectl get gatewayclass envoy                      # ACCEPTED: True
+NAME    CONTROLLER                                      ACCEPTED   AGE
+envoy   gateway.envoyproxy.io/gatewayclass-controller   True       96m
+
 kubectl get crd | grep gateway.networking.k8s.io    # gateways, httproutes, ...
+backendlbpolicies.gateway.networking.k8s.io     2026-08-15T08:13:23Z
+backendtlspolicies.gateway.networking.k8s.io    2026-08-15T08:13:23Z
+gatewayclasses.gateway.networking.k8s.io        2026-08-15T08:13:23Z
+gateways.gateway.networking.k8s.io              2026-08-15T08:13:23Z
+grpcroutes.gateway.networking.k8s.io            2026-08-15T08:13:23Z
+httproutes.gateway.networking.k8s.io            2026-08-15T08:13:23Z
+referencegrants.gateway.networking.k8s.io       2026-08-15T08:13:23Z
+tcproutes.gateway.networking.k8s.io             2026-08-15T08:13:23Z
+tlsroutes.gateway.networking.k8s.io             2026-08-15T08:13:23Z
+udproutes.gateway.networking.k8s.io             2026-08-15T08:13:23Z
 ```
 
 > This is also what installs the Gateway API CRDs, so it must come before
