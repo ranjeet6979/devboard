@@ -249,10 +249,13 @@ kubectl apply -f gitops/gateway/gatewayclass.yaml
 ```bash
 kubectl -n envoy-gateway-system rollout status deploy/envoy-gateway
 output: deployment "envoy-gateway" successfully rolled out
+```
+```bash
 kubectl get gatewayclass envoy                      # ACCEPTED: True
 NAME    CONTROLLER                                      ACCEPTED   AGE
 envoy   gateway.envoyproxy.io/gatewayclass-controller   True       96m
-
+```
+```bash
 kubectl get crd | grep gateway.networking.k8s.io    # gateways, httproutes, ...
 backendlbpolicies.gateway.networking.k8s.io     2026-08-15T08:13:23Z
 backendtlspolicies.gateway.networking.k8s.io    2026-08-15T08:13:23Z
@@ -278,15 +281,39 @@ There is no install step. Terraform did it in §3.
 
 ```bash
 helm list -n argocd        # argocd, chart argo-cd-10.3.0, deployed
+NAME  	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART         	APP VERSION
+argocd	argocd   	1       	2026-08-15 08:02:56.976056926 +0000 UTC	deployed	argo-cd-10.3.0	v3.5.0
+```
+```bash
 kubectl -n argocd get pods
-
+NAME                                                READY   STATUS    RESTARTS       AGE
+argocd-application-controller-0                     1/1     Running   0              117m
+argocd-applicationset-controller-7b7869f499-2hpfl   1/1     Running   0              117m
+argocd-dex-server-5ddb9bd9b9-6s9mw                  1/1     Running   2 (117m ago)   117m
+argocd-notifications-controller-7fd66b54dc-2zqgm    1/1     Running   0              117m
+argocd-redis-56d496fcc4-qbmwz                       1/1     Running   0              117m
+argocd-repo-server-576dc94c65-hffvd                 1/1     Running   0              117m
+argocd-server-68cd9f5c6c-78nlt                      1/1     Running   0              117m
+```
+```bash
 kubectl -n argocd get secret argocd-initial-admin-secret \
   -o jsonpath='{.data.password}' | base64 -d; echo
-
-kubectl -n argocd port-forward svc/argocd-server 8080:80
+It will show login password
+```
+```bash
+root@ip-20-0-1-248:/opt/devboard# kubectl port-forward svc/argocd-server -n argocd 8080:80 --address 0.0.0.0 >/tmp/argocd-port-forward2.log 2>&1 &
+[1] 7959
 ```
 
 Open <http://localhost:8080>, user `admin`.
+Open using bastion EC2 instance <http://public_IP:8080>
+<img width="1444" height="855" alt="image" src="https://github.com/user-attachments/assets/91ba0fe2-83ba-4d8a-8e98-1a693aee590f" />
+username: admin
+password will be output of 
+```bash
+ubuntu@ip-20-0-1-248:~$ kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath='{.data.password}' | base64 -d; echo
+```
 
 > ⚠️ Do **not** run `helm install argocd`. Helm refuses with *"cannot re-use a
 > name that is still in use."* If you would rather install it by hand, set
