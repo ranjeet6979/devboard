@@ -5186,14 +5186,71 @@ blames affinity rather than binding order.
 
 ```bash
 aws eks update-kubeconfig --name devboard --region us-west-2
-
+root@ip-20-0-1-248:/opt/devboard/terraform# aws eks update-kubeconfig --name devboard --region us-west-2
+Added new context arn:aws:eks:us-west-2:899805259876:cluster/devboard to /root/.kube/config
+```
+```bash
 kubectl get nodes                     # 3 Ready, and note the private IPs
+root@ip-20-0-1-248:/opt/devboard/terraform# kubectl get nodes 
+NAME                                       STATUS   ROLES    AGE     VERSION
+ip-10-0-4-64.us-west-2.compute.internal    Ready    <none>   8m35s   v1.34.9-eks-254016e
+ip-10-0-5-195.us-west-2.compute.internal   Ready    <none>   8m35s   v1.34.9-eks-254016e
+ip-10-0-6-86.us-west-2.compute.internal    Ready    <none>   8m27s   v1.34.9-eks-254016e
+```
+```bash
 kubectl get storageclass              # gp3 (default) — with no patching
+root@ip-20-0-1-248:/opt/devboard/terraform# kubectl get storageclass 
+NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
+gp2             kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  14m
+gp3 (default)   ebs.csi.aws.com         Delete          WaitForFirstConsumer   true                   7m13s
+```
+```bash
 kubectl -n kube-system get pods | grep -E 'ebs-csi|metrics-server|pod-identity'
+[root@ip-20-0-1-248:/opt/devboard/terraform# kubectl -n kube-system get pods | grep -E 'ebs-csi|metrics-server|pod-identity'
+ebs-csi-controller-7c45d9d4d8-xtvn9   6/6     Running   0          8m18s
+ebs-csi-controller-7c45d9d4d8-zhgxp   6/6     Running   0          8m18s
+ebs-csi-node-c4dpk                    3/3     Running   0          8m18s
+ebs-csi-node-kw55g                    3/3     Running   0          8m18s
+ebs-csi-node-szjh5                    3/3     Running   0          8m18s
+eks-pod-identity-agent-8jwl2          1/1     Running   0          9m8s
+eks-pod-identity-agent-nmgh4          1/1     Running   0          9m16s
+eks-pod-identity-agent-tn88w          1/1     Running   0          9m16s
+metrics-server-84d74c6fff-8t622       1/1     Running   0          8m22s
+metrics-server-84d74c6fff-rhp45       1/1     Running   0          8m22s
 ```
 
-```bash
+```hcl
 terraform output
+root@ip-20-0-1-248:/opt/devboard/terraform# terraform output
+argocd_initial_password = "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d"
+cluster_endpoint = "https://DEE55C0209AB28E15DA00FCFFFA01879.sk1.us-west-2.eks.amazonaws.com"
+cluster_name = "devboard"
+cluster_version = "1.34"
+configure_kubectl = "aws eks update-kubeconfig --name devboard --region us-west-2"
+external_secrets_role_arn = "arn:aws:iam::899805259876:role/devboard-external-secrets-ab2373b1bdfda33e4275bad06e"
+oidc_provider_arn = "arn:aws:iam::899805259876:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/DEE55C0209AB28E15DA00FCFFFA01879"
+postgres_secret_arn = "arn:aws:secretsmanager:us-west-2:899805259876:secret:devboard/postgres-qhadDt"
+postgres_secret_name = "devboard/postgres"
+private_subnets = [
+  "subnet-0450e6bbf2da30a5b",
+  "subnet-0cb6319fb99a3735b",
+  "subnet-0cb7c43e9eceeee08",
+]
+public_subnets = [
+  "subnet-087169b2103b1b2bc",
+  "subnet-0021c29d418decc4e",
+  "subnet-0842aeea1a86216ff",
+]
+set_postgres_secret = <<EOT
+PGPASS=$(openssl rand -hex 32)
+aws secretsmanager put-secret-value \
+  --secret-id devboard/postgres \
+  --region us-west-2 \
+  --secret-string "$(jq -nc --arg p "$PGPASS" \
+      '{username:"devboard", password:$p, dbname:"devboard"}')"
+
+EOT
+vpc_id = "vpc-03be02b07ff17c314"
 ```
 
 Keep `configure_kubectl` and `set_postgres_secret` handy — chapter 06 uses the
