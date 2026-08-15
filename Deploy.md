@@ -721,6 +721,13 @@ dashboards come from Git.
 | Tempo | `tempo.observability:**3200**` | 3200 is the query API. **4317 is OTLP ingest** — using it gives a datasource that saves fine and returns nothing. |
 
 The Tempo datasource's `tracesToLogsV2` / `tracesToMetrics` / `serviceMap` config
+
+<br><img width="1470" height="797" alt="image" src="https://github.com/user-attachments/assets/04110524-46b3-45bb-8f42-bf696d5789a7" />
+
+<br><img width="1468" height="777" alt="image" src="https://github.com/user-attachments/assets/19de4558-c6b9-49ea-ae42-bfdeac1c2b02" />
+
+<br><img width="1467" height="763" alt="image" src="https://github.com/user-attachments/assets/ceb3dc03-0195-4533-84a9-661b03c21cf4" />
+
 is what makes trace → log → metric navigation work.
 
 ### 13.3 The dashboards
@@ -730,7 +737,11 @@ Folder **DevBoard**, provisioned from Git:
 | Dashboard | Shows |
 | --- | --- |
 | DevBoard AI — RED | rate / errors / p50-p95-p99, derived from spans rather than metrics code, next to the app's own counter |
+<br><img width="1467" height="684" alt="image" src="https://github.com/user-attachments/assets/597f7168-07dd-4fe9-a79e-a32444b4f857" />
+
 | Ollama health | PVC Pending, CPU throttling, restarts, memory vs limit |
+<img width="1470" height="767" alt="image" src="https://github.com/user-attachments/assets/bbb17952-5c50-4485-b436-0a9e372c1381" />
+
 
 Folder **Community**: node-exporter (1860) and kube-state (13332).
 
