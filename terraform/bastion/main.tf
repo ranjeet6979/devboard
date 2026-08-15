@@ -84,13 +84,6 @@ resource "aws_security_group" "ssh" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-    ingress {
-    description = "SSH from peering VPC"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["20.0.0.0/0"]
-  }
 
   egress {
     description = "All outbound"
@@ -111,10 +104,10 @@ resource "aws_security_group" "ssh" {
 # it works even when the instance is replaced. (More on provisioners on Day 6.)
 
 resource "aws_instance" "ssh" {
-  ami                    = data.aws_ami.ubuntu.id
-  instance_type          = var.instance_type
-  subnet_id              = aws_subnet.public.id
-  vpc_security_group_ids = [aws_security_group.ssh.id]
+  ami                         = data.aws_ami.ubuntu.id
+  instance_type               = var.instance_type
+  subnet_id                   = aws_subnet.public.id
+  vpc_security_group_ids      = [aws_security_group.ssh.id]
   associate_public_ip_address = true
 
   user_data = <<-EOF
