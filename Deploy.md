@@ -327,6 +327,7 @@ One Application creates all the rest.
 
 ```bash
 kubectl apply -f gitops/argocd/platform.yaml
+output: application.argoproj.io/platform created
 ```
 
 They arrive in **sync waves**:
