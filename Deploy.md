@@ -362,6 +362,10 @@ kubectl -n observability get pods
 
 ```bash
 kubectl apply -f gitops/argocd/devboard-raw.yaml
+root@ip-20-0-1-248:/opt/devboard# kubectl apply -f gitops/argocd/devboard-raw.yaml
+application.argoproj.io/devboard-raw created
+```
+```bash
 kubectl -n devboard get pods -w
 ```
 
@@ -369,11 +373,30 @@ kubectl -n devboard get pods -w
 
 ```bash
 kubectl -n devboard get externalsecret devboard-secrets      # SecretSynced
+NAME               STORETYPE            STORE                 REFRESH INTERVAL   STATUS         READY   LAST SYNC
+devboard-secrets   ClusterSecretStore   aws-secrets-manager   1h                 SecretSynced   True    5m4s
+```
+```bash
 kubectl -n devboard get secret devboard-secrets -o jsonpath='{.data}' | jq 'keys'
+[
+  "POSTGRES_DB",
+  "POSTGRES_PASSWORD",
+  "POSTGRES_URL",
+  "POSTGRES_USER"
+]
 #   ["POSTGRES_DB","POSTGRES_PASSWORD","POSTGRES_URL","POSTGRES_USER"]
+```
+```bash
 kubectl -n devboard get pvc                                  # Bound, not Pending
+NAME                          STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+data-postgres-statefulset-0   Bound    pvc-89ee9ada-4a62-4cd2-8747-956382d22dc3   1Gi        RWO            gp3            <unset>                 6m6s
+```
+```bash
 kubectl -n devboard wait --for=condition=available --timeout=10m \
   deploy/devboard-backend-deployment deploy/devboard-frontend-deployment
+root@ip-20-0-1-248:/opt/devboard# kubectl -n devboard wait --for=condition=available --timeout=10m   deploy/devboard-backend-deployment deploy/devboard-frontend-deployment
+deployment.apps/devboard-backend-deployment condition met
+deployment.apps/devboard-frontend-deployment condition met
 ```
 
 > ⚠️ Pods sitting in `CreateContainerConfigError` for the first 30–60 seconds is
@@ -386,9 +409,33 @@ kubectl -n devboard wait --for=condition=available --timeout=10m \
 ADDR=$(kubectl -n devboard get gateway devboard-gateway \
         -o jsonpath='{.status.addresses[0].value}')
 echo "$ADDR"           # takes 2-3 min to appear
-
+output: aa231a9f1089c4cf5b91c21fe616f5f4-163878670.us-west-2.elb.amazonaws.com
+```
+```bash
 curl -s -o /dev/null -w '%{http_code}\n' "http://$ADDR/"      # 200
+output: 200
+```
+```bash
 curl -s "http://$ADDR/api/projects" | jq '.[0]'
+root@ip-20-0-1-248:/opt/devboard# curl -s "http://$ADDR/api/projects" | jq .
+{
+  "projects": [
+    {
+      "id": 1,
+      "name": "DevBoard MVP",
+      "description": "Ship the v1 task tracker",
+      "owner_id": 1,
+      "created_at": "2026-08-15T10:29:49Z"
+    },
+    {
+      "id": 2,
+      "name": "Marketing Site",
+      "description": "Landing page + launch blog",
+      "owner_id": 1,
+      "created_at": "2026-08-15T10:29:49Z"
+    }
+  ]
+}
 ```
 
 Open `http://$ADDR/` in a browser. **Keep `$ADDR`** — §12 needs it.
@@ -404,13 +451,66 @@ Open `http://$ADDR/` in a browser. **Keep `$ADDR`** — §12 needs it.
 
 ```bash
 kubectl -n ollama get pvc ollama-models                       # Bound
+root@ip-20-0-1-248:/opt/devboard# kubectl -n ollama get pvc ollama-models  
+NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+ollama-models   Bound    pvc-acbd1539-2ac7-460f-9d29-4b9a06c0fc8f   10Gi       RWO            gp3            <unset>                 16m
+```
+```bash
 kubectl -n ollama rollout status deploy/ollama --timeout=15m  # pulls ~1.3 GB
+root@ip-20-0-1-248:/opt/devboard# kubectl -n ollama rollout status deploy/ollama --timeout=15m 
+deployment "ollama" successfully rolled out
+```
+```bash
 kubectl -n ollama exec deploy/ollama -- ollama list           # llama3.2:1b
-
+Defaulted container "ollama" out of: ollama, pull-model (init)
+NAME           ID              SIZE      MODIFIED       
+llama3.2:1b    baf6a787fdff    1.3 GB    15 minutes ago
+```
+```bash
 curl -s "http://$ADDR/api/ai/health" | jq
+{
+  "model": "llama3.2:1b",
+  "service": "ai-service",
+  "status": "ok"
+}
+```
+```bash
 curl -N -X POST "http://$ADDR/api/ai/ask" \
   -H 'content-type: application/json' \
   -d '{"project_id":"1","question":"what is blocked?"}'
+
+data: {"text": "The"}
+
+data: {"text": " task"}
+
+data: {"text": " #"}
+
+data: {"text": "6"}
+
+data: {"text": ","}
+
+data: {"text": " \""}
+
+data: {"text": "Fix"}
+
+data: {"text": " fl"}
+
+data: {"text": "aky"}
+
+data: {"text": " avatar"}
+
+data: {"text": " colors"}
+
+data: {"text": "\","}
+
+data: {"text": " is"}
+
+data: {"text": " blocked"}
+
+data: {"text": "."}
+
+data: [DONE]
+
 ```
 
 **You know it worked when** tokens stream back. That request also puts a real
