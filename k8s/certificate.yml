@@ -11,7 +11,7 @@ spec:
   dnsNames:
     - devboard.tanishka.site
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-prod
     kind: ClusterIssuer
     group: cert-manager.io
   privateKey:
