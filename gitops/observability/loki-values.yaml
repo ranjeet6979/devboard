@@ -27,7 +27,10 @@ loki:
 
   server:
     http_listen_port: 3100
-
+    experimental:
+      otlp:
+        enabled: true
+        
 singleBinary:
   replicas: 1
   persistence:
