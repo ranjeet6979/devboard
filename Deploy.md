@@ -221,6 +221,8 @@ aws secretsmanager get-secret-value --secret-id devboard/postgres \
   --region us-west-2 >/dev/null && echo secret-ok
 grep -rn 'repoURL: https://github.com' gitops/argocd | grep -vc "$GH_USER"    # 0
 ```
+<br><img width="790" height="243" alt="image" src="https://github.com/user-attachments/assets/02d571d3-9f85-4099-8257-78ac544c5190" />
+
 
 If all five pass, nothing downstream can fail for a trivial reason. You can
 either keep reading, or jump to **§17** and let the script do §6–§9 for you.
