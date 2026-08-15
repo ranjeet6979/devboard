@@ -547,8 +547,13 @@ rotate without warning.
 **You know it worked when — and do not continue until it does:**
 
 ```bash
-dig +short @8.8.8.8 devboard.trainwithshubham.com
-curl -s -o /dev/null -w '%{http_code}\n' http://devboard.trainwithshubham.com/   # 200
+dig +short @8.8.8.8 devboard.tanishka.site
+aa231a9f1089c4cf5b91c21fe616f5f4-163878670.us-west-2.elb.amazonaws.com.
+44.238.54.205
+```
+```bash
+curl -s -o /dev/null -w '%{http_code}\n' http://devboard.tanishka.site/   # 200
+
 ```
 
 > ⚠️ A `403` here means the frontend image predates the `preview.allowedHosts`
