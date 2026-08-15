@@ -12,7 +12,7 @@ spec:
     - name: devboard-gateway
       sectionName: http
   hostnames:
-    - devboard.trainwithshubham.com
+    - devboard.tanishka.site
   rules:
     - matches:
         - path:
