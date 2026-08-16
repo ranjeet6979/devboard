@@ -747,42 +747,37 @@ Folder **Community**: node-exporter (1860) and kube-state (13332).
 
 ### 13.4 Prove data is flowing
 
-```bash
-# 1. generate traffic
-curl -s "http://$ADDR/api/projects" >/dev/null
 
-# 2. traces — Explore -> Tempo -> Search, service.name = backend / ai-service / envoy
-```
+1. generate traffic
 ```bash
+curl -s "http://$ADDR/api/projects" >/dev/null
+```
+
+2. traces — Explore -> Tempo -> Search, service.name = backend / ai-service / envoy
+
 ai-service
 <br><img width="1463" height="819" alt="image" src="https://github.com/user-attachments/assets/7afe5670-eb06-4ee0-8959-d6a7678b9b07" />
 <br><img width="1469" height="773" alt="image" src="https://github.com/user-attachments/assets/f43654be-24ee-4fbd-97c1-0b694a3fc2aa" />
 
-```
-```bash
 backend
 <br><img width="1248" height="783" alt="image" src="https://github.com/user-attachments/assets/25b45610-3945-4216-b00e-7841d4dbaa33" />
-```
-```bash
+
 envoy
 <br><img width="1469" height="784" alt="image" src="https://github.com/user-attachments/assets/695e8bf6-ff25-4d73-9e58-8e947b8dbbd8" />
 
-```
-
-# 3. metrics — Prometheus targets
+3. metrics — Prometheus targets
 kubectl -n observability port-forward svc/prometheus-operated 9090:9090
 
 <br><img width="1466" height="598" alt="image" src="https://github.com/user-attachments/assets/615bc0c8-611c-49fc-9ab2-4af8c3054374" />
 
-#    http://localhost:9090/targets -> devboard-backend, devboard-ai-service UP
+http://localhost:9090/targets -> devboard-backend, devboard-ai-service UP
 <br><img width="1470" height="831" alt="image" src="https://github.com/user-attachments/assets/f2e0e77b-4fd7-4630-8688-8630b05978b5" />
 
-
-# 4. logs — Explore -> Loki -> {k8s_namespace_name="devboard"}
+4. logs — Explore -> Loki -> {k8s_namespace_name="devboard"}
 kubectl -n observability logs deploy/otel-collector-gateway | grep -i loki
 
-# 5. the whole pipeline — Explore -> Tempo -> Service Graph
-```
+5. the whole pipeline — Explore -> Tempo -> Service Graph
+
 
 ### 13.5 What emits what
 
